@@ -109,11 +109,13 @@ GitHub.sublime-settings
 
 # Visual Studio Code # 
 .vscode/* 
+/.vscode
 !.vscode/settings.json 
 !.vscode/tasks.json 
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+/node_modules
 node_modules/.bin/loose-envify
 node_modules/.bin/loose-envify.cmd
 node_modules/@babel/runtime/LICENSE

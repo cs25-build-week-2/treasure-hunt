@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
+import "../App.scss";
+
 const Wallet = () => {
 	const [wallet, setWallet] = useState([]);
 	useEffect(() => {
@@ -13,9 +15,8 @@ const Wallet = () => {
 		}
 		getBalance();
 	}, []);
-	console.log(wallet.balance);
 	return (
-		<div>
+		<div className="wallet">
 			<h1>Wallet</h1>
 			<h4>Balance:</h4>
 			<p>{wallet.balance && wallet.balance.messages}</p>

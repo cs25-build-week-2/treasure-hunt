@@ -7,10 +7,19 @@
 	background: whitesmoke;
 	margin: 0px 2%;
 	padding: 1%;
+	.title {
+		text-align: center;
+	}
 	.player-console {
 		@include flex(space-around);
 	}
 }
 .room-info {
 	@include flex(space-between);
+}
+.wallet {
+	border-radius: 5%;
+
+	border: 5px solid white;
+	width: 300px;
 }
