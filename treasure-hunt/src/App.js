@@ -1,10 +1,13 @@
 import React from "react";
-import "./App.css";
+import Map from "./components/Map";
+
+import "./App.scss";
 
 function App() {
 	return (
 		<div className="App">
-			<header className="App-header">Learn React</header>
+			<h1>Treasure Hunt</h1>
+			<Map />
 		</div>
 	);
 }

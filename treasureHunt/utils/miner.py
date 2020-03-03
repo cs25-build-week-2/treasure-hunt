@@ -1,5 +1,5 @@
 import hashlib
-import request
+import requests
 
 import sys
 from uuid import uuid4
@@ -19,14 +19,15 @@ def proof_of_work(last_proof):
 
     return proof
 
-    def valid_proof(last_hash, proof):
-        '''
-        Validate the Proof: 
-        '''
-        guess = f'{proof}'.encode()
-        l_hash = hashlib.sha256(guess).hexdigest()
 
-        return l_hash[:6] == last_hash[:6]
+def valid_proof(last_hash, proof):
+    '''
+    Validate the Proof: 
+    '''
+    guess = f'{proof}'.encode()
+    l_hash = hashlib.sha256(guess).hexdigest()
+
+    return l_hash[:6] == last_hash[:6]
 
 
 if __name__ == '__main__':

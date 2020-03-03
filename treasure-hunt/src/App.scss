@@ -1,0 +1,11 @@
+@mixin flex($content) {
+	display: flex;
+	justify-content: $content;
+}
+
+.App {
+	background: whitesmoke;
+}
+.room-info {
+	@include flex(space-between);
+}
