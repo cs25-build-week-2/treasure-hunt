@@ -8,7 +8,8 @@ const Map = () => {
 		async function getInit() {
 			const setUp = await axiosWithAuth()
 				.get("/api/adv/init/")
-				.then(res => res.data);
+				.then(res => res.data)
+				.catch(e => console.log(e));
 			setInit({ setUp });
 		}
 		getInit();
@@ -21,6 +22,7 @@ const Map = () => {
 			</div>
 			<h3>Room Name: {init.setUp && init.setUp.title}</h3>
 			<p>Room Description: {init.setUp && init.setUp.description}</p>
+			<p>Room Exits: {init.setUp && init.setUp.exits}</p>
 		</div>
 	);
 };

@@ -5,6 +5,11 @@
 
 .App {
 	background: whitesmoke;
+	margin: 0px 2%;
+	padding: 1%;
+	.player-console {
+		@include flex(space-around);
+	}
 }
 .room-info {
 	@include flex(space-between);
