@@ -1,25 +1,25 @@
 import React from "react";
-import Map from "./components/Map";
-import Wallet from "./components/Wallet";
-import Controls from "./components/Controls";
+import Map from "./pages/Map";
+import Wallet from "./pages/Wallet";
+import Controls from "./pages/Controls";
 
 // context
-import { playerStateProvider } from "./context/player";
+import { PlayerState } from "./context/playerState";
 
 import "./App.scss";
 
 function App() {
 	return (
-		<playerStateProvider>
-			<div className="App">
+		<div className="App">
+			<PlayerState>
 				<h1 className="title">Treasure Hunt</h1>
 				<div className="player-console">
 					<Map />
 					<Wallet />
 				</div>
 				<Controls />
-			</div>
-		</playerStateProvider>
+			</PlayerState>
+		</div>
 	);
 }
 

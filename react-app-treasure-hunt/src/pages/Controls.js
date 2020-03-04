@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { Button, Icon } from "semantic-ui-react";
 import axios from "axios";
+
+import Dpad from "../components/dPad";
+
+import { Button } from "semantic-ui-react";
 
 const url = "http://localhost:8000";
 
@@ -22,25 +25,7 @@ const Controls = () => {
 			<Button inverted color="blue" onClick={findNearestShrine}>
 				Find Nearest Shrine
 			</Button>
-			<div className="controls">
-				<div className="n">
-					<Icon name="arrow up" />
-					<p>N</p>
-				</div>
-				<div className="e-w">
-					<div className="w">
-						<Icon name="arrow left" />W
-					</div>
-					<div className="e">
-						E
-						<Icon name="arrow right" />
-					</div>
-				</div>
-				<div className="s">
-					<Icon name="arrow down" />
-					<p>S</p>
-				</div>
-			</div>
+			<Dpad />
 		</div>
 	);
 };
