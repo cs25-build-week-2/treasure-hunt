@@ -7,3 +7,4 @@ def find_path(current_room):
 
     '''
     print(current_room)
+    return traversal_path
