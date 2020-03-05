@@ -16,9 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
-from . import api
+from exploration.api import find_shrine
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url('find-shrine', api.find_shrine)
+    url('find-shrine', find_shrine)
 ]

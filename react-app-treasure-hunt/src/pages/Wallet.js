@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { PlayerContext } from "../context/playerState";
 
 import "../App.scss";
 import { FormField, Button, Form } from "semantic-ui-react";
 
 const Wallet = () => {
-	const [wallet, setWallet] = useState([]);
-	const [name, setName] = useState("");
-	const { changeName, playerName } = useContext(PlayerContext);
+	const [name, setName] = useState([""]);
+	const { changeName, card } = useContext(PlayerContext);
 	// useEffect(() => {
 	// 	async function getBalance() {
 	// 		const balance = await axiosWithAuth()
@@ -22,12 +21,12 @@ const Wallet = () => {
 		e.preventDefault();
 		changeName(name);
 	};
-	console.log("playerName");
 	return (
 		<div className="wallet">
+			<h1>Wallet</h1>
 			<Form onSubmit={handleSubmit}>
-				<h1>Name: </h1>
-				{playerName && playerName.name}
+				<h3>Name: {card && card.name} </h3>
+
 				<FormField>
 					<input
 						type="text"
@@ -38,9 +37,8 @@ const Wallet = () => {
 				</FormField>
 				<Button type="submit">Change Name</Button>
 			</Form>
-			<h1>Wallet</h1>
 			<h4>Balance:</h4>
-			<p>{wallet.balance && wallet.balance.messages}</p>
+			<p>{card && card.gold} gold</p>
 		</div>
 	);
 };
