@@ -1,13 +1,14 @@
+from timeit import default_timer as timer
+from requests.auth import AuthBase
+from calls import TokenAuth, head
+from decouple import config
 import hashlib
 import requests
-from requests.auth import AuthBase
-
-import sys
-from decouple import config
-from timeit import default_timer as timer
-from calls import TokenAuth, head
-
+import json
 import random
+import time
+import math
+import sys
 
 
 def proof_of_work(last_proof, difficulty):
@@ -19,7 +20,7 @@ def proof_of_work(last_proof, difficulty):
     print("Searching for next proof")
     tries = 0
 
-    proof = random.random()
+    proof = 1
     end_proof = f'{last_proof}'.encode()
     t_hash = hashlib.sha256(end_proof).hexdigest()
 
@@ -31,6 +32,7 @@ def proof_of_work(last_proof, difficulty):
 
     print("Proof found: " + str(proof) + " in " +
           str(timer() - start) + ' second(s)')
+    print(proof)
     return proof
 
 
@@ -44,16 +46,26 @@ def valid_proof(last_hash, proof, difficulty):
 
 def mine():
     while True:
-        last = requests.get(url=head['node'] + '/adv/move/',
+        cooldown = 30
+        last = requests.get(url=head['node'] + '/bc/last_proof/',
                             auth=TokenAuth(head['token']))
         last_data = last.json()
+        print(last_data)
 
         new_proof = proof_of_work(last_data['proof'], last_data['difficulty'])
 
         post_data = {'proof': new_proof}
-
+        print(post_data)
         mine = requests.post(
-            url=head['node'] + '/adv/move/',
+            url=head['node'] + '/bc/mine/',
             auth=TokenAuth(head['token']),  json=post_data)
         data = mine.json()
-        print(data['message'])
+        try:
+            print(data)
+        except json.decoder.JSONDecodeError:
+            print("\nN'est pass JSON\n")
+
+        time.sleep(cooldown)
+
+
+mine()

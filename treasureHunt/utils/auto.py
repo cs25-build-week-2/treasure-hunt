@@ -1,4 +1,5 @@
 from calls import TokenAuth, head
+from miner import mine
 from traverse import bfs
 import requests
 import time
@@ -29,6 +30,13 @@ def auto_move(path):
         print(moved)
 
 
+def auto_mine():
+    '''
+    Pray at the shrine
+    '''
+    mine()
+
+
 def auto_pilot(starting_room, target):
     '''
     Create path with bfs
@@ -38,4 +46,5 @@ def auto_pilot(starting_room, target):
     auto_move(path)
 
 
-auto_pilot(349, 55)
+# auto_pilot(55, 384)
+auto_mine()
