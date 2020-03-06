@@ -7,6 +7,8 @@ import {
 	SHRINE_PATH_SUCCESS,
 	STATUS_SUCCESS,
 	PRAY_SUCCESS,
+	PICKUP_SUCCESS,
+	EXAMINE_SUCCESS,
 } from "./types";
 import { loadState, saveState } from "../utils/localStorage";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
@@ -15,7 +17,7 @@ import playerReducer from "./playerReducer";
 
 export const PlayerContext = createContext();
 
-const url = "http://localhost:8000";
+const url = "http://127.0.0.1:8000";
 
 export const PlayerState = props => {
 	const initialState = {
@@ -28,6 +30,7 @@ export const PlayerState = props => {
 			room_coordinates: null,
 			terrain: "NORMAL",
 			cooldown: 1,
+			items: [],
 		},
 		card: {
 			name: "User 20682",
@@ -95,7 +98,10 @@ export const PlayerState = props => {
 	const pathToShrine = async (current_room, shrine) => {
 		dispatch({ type: IS_LOADING, payload: true });
 		try {
-			const path = await axios.post(`${url}/find-shrine/`);
+			const path = await axios.post(`${url}/find-shrine/`, {
+				start: current_room,
+				target: shrine,
+			});
 			dispatch({ type: SHRINE_PATH_SUCCESS, payload: path.data });
 		} catch (e) {
 			console.log(e);
@@ -104,7 +110,7 @@ export const PlayerState = props => {
 	const getStats = async () => {
 		dispatch({ type: IS_LOADING, payload: true });
 		try {
-			const res = await axiosWithAuth().post("api/adv/status/");
+			const res = await axiosWithAuth().post("/api/adv/status/");
 			dispatch({ type: STATUS_SUCCESS, payload: res.data });
 		} catch (e) {
 			console.log(e);
@@ -114,12 +120,48 @@ export const PlayerState = props => {
 	const prayAtShrine = async () => {
 		dispatch({ type: IS_LOADING, payload: true });
 		try {
-			const path = await axiosWithAuth.post(`/api/adv/pray/`);
-			dispatch({ type: PRAY_SUCCESS, payload: path.data });
+			const pray = await axiosWithAuth.post(`/api/adv/pray/`);
+			dispatch({ type: PRAY_SUCCESS, payload: pray.data });
 		} catch (e) {
 			console.log(e);
 		}
 	};
+	const pickUp = async treasure => {
+		dispatch({ type: IS_LOADING, payload: true });
+		try {
+			const take = await axiosWithAuth.post(`/api/adv/take/`, {
+				name: treasure,
+			});
+			dispatch({ type: PICKUP_SUCCESS, payload: take.data });
+		} catch (e) {
+			console.log(e);
+		}
+	};
+	const auto = async room_id => {
+		dispatch({ type: IS_LOADING, payload: true });
+		try {
+			const take = await axios.post(`${url}/auto/`, {
+				current_room: room_id,
+			});
+			dispatch({ type: PICKUP_SUCCESS, payload: take.data });
+		} catch (e) {
+			console.log(e);
+		}
+	};
+	const examine = async name => {
+		dispatch({ type: IS_LOADING, payload: true });
+		try {
+			const exam = await axiosWithAuth
+				.post(`api/adv/examine/`, {
+					name: name,
+				})
+				.then(res => console.log(res));
+			dispatch({ type: EXAMINE_SUCCESS, payload: exam.data });
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	return (
 		<PlayerContext.Provider
 			value={{
@@ -129,6 +171,9 @@ export const PlayerState = props => {
 				pathToShrine,
 				prayAtShrine,
 				getStats,
+				pickUp,
+				auto,
+				examine,
 				map: state.map,
 				card: state.card,
 			}}

@@ -1,66 +1,73 @@
-import hashlib
 import requests
-
-import sys
-from uuid import uuid4
-from timeit import default_timer as timer
-
+import time
+import os
+import json
 import random
+import hashlib
+from decouple import config
 
 
-def proof_of_work(last_proof):
-    '''
-    Proof of work
-    '''
-    start = timer()
-    print('Searching for next proof')
-    proof = 0
-    print('Proof found: ' + str(proof) + ' in ' + str(timer()-start))
-
-    return proof
+lastProof = 0
+difficulty = 0
+leadingZeros = "000000"
 
 
-def valid_proof(last_hash, proof):
-    '''
-    Validate the Proof: 
-    '''
-    guess = f'{proof}'.encode()
-    l_hash = hashlib.sha256(guess).hexdigest()
+def init():
+    res = requests.get('https://lambda-treasure-hunt.herokuapp.com/api/bc/last_proof/',
+                       headers={'Authorization': config("API_KEY")})
 
-    return l_hash[:6] == last_hash[:6]
+    if res:
+        global lastProof
+        global difficulty
+        global leadingZeros
+        res = res.json()
+        lastProof = res['proof']
+        difficulty = res['difficulty']
+        leadingZeros = "0" * difficulty
+
+        time.sleep(res['cooldown'])
 
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        node = sys.argv[1]
+def mine():
+    global lastProof
+    global difficulty
+    global leadingZeros
+
+    guess = random.randrange(3274, 6821)
+    encoded = f'{lastProof}{guess}'.encode()
+    hashed = hashlib.sha256(encoded).hexdigest()
+
+    print(hashed[:difficulty], leadingZeros)
+
+    while hashed[:difficulty] is leadingZeros:
+        guess += random.randrange(3274, 6821)
+        encoded = f'{lastProof}{guess}'.encode()
+        hashed = hashlib.sha256(encoded).hexdigest()
+
+    print(hashed)
+    res = requests.post('https://lambda-treasure-hunt.herokuapp.com/api/bc/mine/',
+                        headers={'Authorization': config('API_KEY')},
+                        json={'proof': guess}
+                        )
+    print(res)
+    if res:
+        res = res.json()
+        print(res)
+
+        time.sleep(res['cooldown'])
+
+
+def proof(proposedProof):
+    str(proposedProof)
+    check = proposedProof[:difficulty]
+
+    if int(check) == 0:
+        return True
     else:
-        node = 'https://lambda-treasure-hunt.herokuapp.com/api/bc/mine/'
+        return False
 
-    coins_mined = 0
 
-    # Load or create ID
-    f = open("my_id.txt", "r")
-    id = f.read()
-    print("ID is", id)
-    f.close()
-
-    if id == 'NONAME\n':
-        print("ERROR: You must change your name in `my_id.txt`!")
-        exit()
-    # Run forever until interrupted
-    while True:
-        # Get the last proof from the server
-        r = requests.get(url=node + "/last_proof")
-        data = r.json()
-        new_proof = proof_of_work(data.get('proof'))
-
-        post_data = {"proof": new_proof,
-                     "id": id}
-
-        r = requests.post(url=node + "/mine", json=post_data)
-        data = r.json()
-        if data.get('message') == 'New Block Forged':
-            coins_mined += 1
-            print("Total coins mined: " + str(coins_mined))
-        else:
-            print(data.get('message'))
+init()
+while True:
+    mine()
+    init()

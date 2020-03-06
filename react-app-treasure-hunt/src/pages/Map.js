@@ -1,14 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import Timer from "react-compound-timer";
 import { PlayerContext } from "../context/playerState";
 
 const Map = () => {
-	const { map, getInit } = useContext(PlayerContext);
-
-	useEffect(() => {
-		getInit();
-	}, []);
-
+	const { map } = useContext(PlayerContext);
+	const time = map.cooldown * 1000;
+	console.log("map.cooldown", map.cooldown);
 	return (
 		<div>
 			<div className="room-info">
@@ -19,8 +16,23 @@ const Map = () => {
 			<p>Room Description: {map && map.description}</p>
 			<p>Room Exits: {map && map.exits}</p>
 			<p>Room Terrain: {map && map.terrain}</p>
-			<Timer initialTime={map && map.cooldown} direction="backward">
-				CoolDown: <Timer.Seconds /> (s)
+			{(() => {
+				if (map.items.length === 0) {
+					return <p>Treasure: "None"</p>;
+				} else {
+					return <p>Treasure: {map.items}</p>;
+				}
+			})()}
+			<Timer
+				initialTime={time}
+				startImmediately={true}
+				direction="backward"
+			>
+				{() => (
+					<React.Fragment>
+						CoolDown: <Timer.Seconds /> (s)
+					</React.Fragment>
+				)}
 			</Timer>
 		</div>
 	);

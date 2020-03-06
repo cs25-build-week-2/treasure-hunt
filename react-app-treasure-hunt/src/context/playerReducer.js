@@ -6,6 +6,8 @@ import {
 	SHRINE_PATH_SUCCESS,
 	STATUS_SUCCESS,
 	PRAY_SUCCESS,
+	PICKUP_SUCCESS,
+	EXAMINE_SUCCESS,
 } from "./types";
 
 const setIsLoading = (state, action) => {
@@ -58,6 +60,20 @@ const pray = (state, action) => {
 		card: { ...action.payload },
 	};
 };
+const take = (state, action) => {
+	return {
+		...state,
+		is_loading: false,
+		card: { ...action.payload },
+	};
+};
+const examine = (state, action) => {
+	return {
+		...state,
+		is_loading: false,
+		card: { ...action.payload },
+	};
+};
 const playerReducer = (state, action) => {
 	switch (action.type) {
 		case IS_LOADING:
@@ -74,6 +90,10 @@ const playerReducer = (state, action) => {
 			return getStats(state, action);
 		case PRAY_SUCCESS:
 			return pray(state, action);
+		case PICKUP_SUCCESS:
+			return take(state, action);
+		case EXAMINE_SUCCESS:
+			return examine(state, action);
 		default:
 			return state;
 	}

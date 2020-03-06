@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 from exploration.api import find_shrine
+from exploration.api import auto
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url('find-shrine', find_shrine)
+    url('find-shrine/', find_shrine),
+    url('auto/', auto)
 ]

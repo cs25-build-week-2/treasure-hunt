@@ -4,11 +4,13 @@ import { PlayerContext } from "../context/playerState";
 import Dpad from "../components/dPad";
 import StatusCard from "../components/StatusCard";
 import Shrine from "../components/Shrine";
+import Items from "../components/Items";
+import Auto from "../components/auto";
 
 import { Button } from "semantic-ui-react";
 
 const Controls = () => {
-	const { pathToShrine, getStats, map } = useContext(PlayerContext);
+	const { pathToShrine, getStats, map, examine } = useContext(PlayerContext);
 
 	function shrine() {
 		pathToShrine(map.room_id, 22);
@@ -16,7 +18,10 @@ const Controls = () => {
 	function status() {
 		getStats();
 	}
-	if (map.room_id == 22) {
+	function examines() {
+		examine("well");
+	}
+	if (map.room_id === 22) {
 		shrine = <Shrine />;
 	}
 	return (
@@ -26,8 +31,12 @@ const Controls = () => {
 				<Button inverted color="blue" onClick={shrine}>
 					Find Nearest Shrine
 				</Button>
+				<Auto />
 				<Button inverted color="blue" onClick={status}>
 					Get Status
+				</Button>
+				<Button inverted color="blue" onClick={examines}>
+					Examine
 				</Button>
 			</div>
 			<div className="actions">
@@ -35,6 +44,7 @@ const Controls = () => {
 				<StatusCard />
 			</div>
 			{shrine}
+			<Items />
 		</div>
 	);
 };

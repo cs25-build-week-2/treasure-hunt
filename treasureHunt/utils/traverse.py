@@ -1,7 +1,6 @@
 from util import Queue, inverse_order, Graph
 from map_file import room_graph
 import random
-from ast import literal_eval
 
 g = Graph()
 traversal_path = []
@@ -14,7 +13,7 @@ def bfs(rooms_id, target):
     """
     Return a list containing the shortest path from
     starting_vertex to destination_vertex in
-    breath-first order.
+    breath-first order. 
 
     Find the path to the nearest shrine from the current room_id
     Shrine at room_id: 22
@@ -52,4 +51,4 @@ def bfs(rooms_id, target):
                 q.enqueue(copy)
 
 
-bfs(73, 22)
+bfs(55, 384)
