@@ -1,73 +1,59 @@
-import requests
-import time
-import os
-import json
-import random
 import hashlib
+import requests
+from requests.auth import AuthBase
+
+import sys
 from decouple import config
+from timeit import default_timer as timer
+from calls import TokenAuth, head
+
+import random
 
 
-lastProof = 0
-difficulty = 0
-leadingZeros = "000000"
+def proof_of_work(last_proof, difficulty):
+    '''
+    Find proof
+    '''
+    start = timer()
+
+    print("Searching for next proof")
+    tries = 0
+
+    proof = random.random()
+    end_proof = f'{last_proof}'.encode()
+    t_hash = hashlib.sha256(end_proof).hexdigest()
+
+    while valid_proof(t_hash, proof, difficulty) is False:
+        proof += 1
+        tries += 1
+        if tries % 1000000 == 0:
+            print(tries/1000000, 'million tries')
+
+    print("Proof found: " + str(proof) + " in " +
+          str(timer() - start) + ' second(s)')
+    return proof
 
 
-def init():
-    res = requests.get('https://lambda-treasure-hunt.herokuapp.com/api/bc/last_proof/',
-                       headers={'Authorization': config("API_KEY")})
+def valid_proof(last_hash, proof, difficulty):
+    # TODO: Your code here!
+    guess = f'{proof}'.encode()
+    l_hash = hashlib.sha256(guess).hexdigest()
 
-    if res:
-        global lastProof
-        global difficulty
-        global leadingZeros
-        res = res.json()
-        lastProof = res['proof']
-        difficulty = res['difficulty']
-        leadingZeros = "0" * difficulty
-
-        time.sleep(res['cooldown'])
+    return l_hash[:difficulty] == last_hash[:difficulty]
 
 
 def mine():
-    global lastProof
-    global difficulty
-    global leadingZeros
+    while True:
+        last = requests.get(url=head['node'] + '/adv/move/',
+                            auth=TokenAuth(head['token']))
+        last_data = last.json()
 
-    guess = random.randrange(3274, 6821)
-    encoded = f'{lastProof}{guess}'.encode()
-    hashed = hashlib.sha256(encoded).hexdigest()
+        new_proof = proof_of_work(last_data['proof'], last_data['difficulty'])
 
-    print(hashed[:difficulty], leadingZeros)
+        post_data = {'proof': new_proof}
 
-    while hashed[:difficulty] is leadingZeros:
-        guess += random.randrange(3274, 6821)
-        encoded = f'{lastProof}{guess}'.encode()
-        hashed = hashlib.sha256(encoded).hexdigest()
-
-    print(hashed)
-    res = requests.post('https://lambda-treasure-hunt.herokuapp.com/api/bc/mine/',
-                        headers={'Authorization': config('API_KEY')},
-                        json={'proof': guess}
-                        )
-    print(res)
-    if res:
-        res = res.json()
-        print(res)
-
-        time.sleep(res['cooldown'])
-
-
-def proof(proposedProof):
-    str(proposedProof)
-    check = proposedProof[:difficulty]
-
-    if int(check) == 0:
-        return True
-    else:
-        return False
-
-
-init()
-while True:
-    mine()
-    init()
+        mine = requests.post(
+            url=head['node'] + '/adv/move/',
+            auth=TokenAuth(head['token']),  json=post_data)
+        data = mine.json()
+        print(data['message'])

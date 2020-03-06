@@ -1,34 +1,41 @@
-# from .traverse import bfs
-# import requests
+from calls import TokenAuth, head
+from traverse import bfs
+import requests
 import time
 import os
 import json
-# from dotenv import load_dotenv
-# load_dotenv()
 
 
-current_room = None
-cooldown = 15
+def auto_move(path):
+    '''
+    Auto move without penalty
+    '''
+    # While there is still directions to go to
+    while len(path) > 0:
+        # grab the first direction from path
+        direction = path.pop(0)
+        # # create a cooldown timer
+        cooldown = 0
+        # # dinamic movement
+        movement = {"direction": f"{direction}"}
+        # # post request to move to new room
+        move = requests.post(url=head['node'] + '/adv/move/',
+                             auth=TokenAuth(head['token']), json=movement)
 
-print(time.sleep(cooldown))
+        moved = move.json()
+        # # assing create a cooldown timer
+        cooldown = moved['cooldown']
+        time.sleep(cooldown)
+        print(moved)
 
 
-def auto_pilot(room, location):
-    if location == 'well':
-        target = 55
-    if location == 'shrine':
-        target = 22
-
-    path = bfs(room, target)
-
-    # for move in path:
-    #     time.sleep(cooldown)
-
-    #     res = requests.post('https://lambda-treasure-hunt.herokuapp.com/api/adv/move/',
-    #                         headers={'Authorization': str(
-    #                             os.getenv('API_KEY'))},
-    #                         json={'direction': move}
-    #                         )
+def auto_pilot(starting_room, target):
+    '''
+    Create path with bfs
+    '''
+    path = bfs(starting_room, target)
+    # travel to target
+    auto_move(path)
 
 
-# auto_pilot(55, 'shrine')
+auto_pilot(349, 55)
