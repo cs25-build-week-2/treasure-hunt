@@ -1,0 +1,84 @@
+@mixin flex($content) {
+	display: flex;
+	justify-content: $content;
+}
+
+@mixin direction($d) {
+	display: flex;
+	flex-direction: $d;
+}
+@mixin items($i) {
+	display: flex;
+	align-items: $i;
+}
+@mixin btn {
+	width: 40px;
+	height: 40px;
+	background: black;
+	border-radius: 50%;
+}
+.App {
+	background: whitesmoke;
+	margin: 0px 2%;
+	padding: 1%;
+	.title {
+		text-align: center;
+	}
+	.player-console {
+		@include flex(space-around);
+	}
+}
+.room-info {
+	@include flex(space-between);
+}
+.wallet {
+	border-radius: 5%;
+	border: 5px solid white;
+	width: 300px;
+}
+.controls-wrapper {
+	.hot-key {
+		@include flex(space-between);
+	}
+	.actions {
+		@include flex(space-around);
+		flex-direction: row;
+		.stat-card {
+			width: 350px;
+			height: 400px;
+			overflow-x: hidden;
+		}
+	}
+	.controls {
+		border-radius: 50%;
+		border: 4px solid lightcyan;
+		width: 200px;
+		height: 200px;
+		text-align: center;
+		.n {
+			margin: auto;
+			@include btn();
+		}
+		.e-w {
+			@include direction(row);
+			justify-content: space-between;
+			.e {
+				@include items(center);
+				@include btn();
+				justify-content: flex-end;
+			}
+			.w {
+				@include items(center);
+				@include btn();
+			}
+		}
+		.s {
+			margin: auto;
+			@include btn();
+		}
+	}
+}
+.shrine {
+	width: 100px;
+	@include direction(column);
+}
