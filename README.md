@@ -296,7 +296,10 @@ to warp.
 
 ## Recall
 
-You may come across the ability to recall to your starting location.
+You may come across the ability to recall to your starting location
+`
+curl -X POST -H 'Authorization: Token 7a375b52bdc410eebbc878ed3e58b2e94a8cb607' -H "Content-Type: application/json" https://lambda-treasure-hunt.herokuapp.com/api/adv/recall/
+`
 
 `curl -X POST -H 'Authorization: Token 7a375b52bdc410eebbc878ed3e58b2e94a8cb607' -H "Content-Type: application/json" https://lambda-treasure-hunt.herokuapp.com/api/adv/recall/`
 
